@@ -1,0 +1,108 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# Flutter/Dart/Pub related
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+.buildlog
+.pub-cache/
+.pub/
+
+# Project-specific
+.idea/
+.vscode/
+build/
+
+# Miscellaneous
+*.iml
+*.log
+*.lock
+*.DS_Store
+*.pdb
+*.pyc
+*.class
+*.suo
+*.swp
+*.tmp
+*.temp
+*.obj
+*.o
+*.a
+*.mode1v3
+*.mode2v3
+*.dat
+*.bak
+*.orig
+*.gz
+*.lz
+*.bbl
+*.synctex.gz
+*.blg
+*.dvi
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Linux
+*~
+
+# JetBrains (IntelliJ IDEA, Android Studio)
+.idea/
+*.iws
+*.ipr
+*.iml
+
+# Visual Studio Code
+.vscode/
