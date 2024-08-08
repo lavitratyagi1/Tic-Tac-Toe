@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class GamePage extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _GamePageState extends State<GamePage> {
   String _winner = '';
   bool _gameOver = false;
   bool? _vibrationEnabled;
+  bool? _soundEnabled;
+  AudioPlayer _audioPlayer = AudioPlayer(); // Audio player instance
 
   @override
   void initState() {
@@ -24,6 +27,7 @@ class _GamePageState extends State<GamePage> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       _vibrationEnabled = prefs.getBool('vibrationEnabled') ?? true;
+      _soundEnabled = prefs.getBool('soundEnabled') ?? true;
     });
   }
 
@@ -31,9 +35,17 @@ class _GamePageState extends State<GamePage> {
     if (_board[index] == '' && !_gameOver) {
       setState(() {
         _board[index] = _currentPlayer;
+
+        // Play sound if enabled
+        if (_soundEnabled == true) {
+          _playSound(); // Call the sound function here
+        }
+
+        // Trigger vibration if enabled
         if (_vibrationEnabled == true && _board[index] != '') {
           Vibration.vibrate(duration: 50);
         }
+
         if (_checkWin()) {
           _winner = _currentPlayer;
           _gameOver = true;
@@ -47,6 +59,11 @@ class _GamePageState extends State<GamePage> {
         }
       });
     }
+  }
+
+  // Play sound function
+  void _playSound() async {
+    await _audioPlayer.play(AssetSource('sounds/tap_sound.wav'));
   }
 
   bool _checkWin() {
@@ -85,7 +102,8 @@ class _GamePageState extends State<GamePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(winner == 'Tie' ? 'It\'s a Tie!' : 'Player $winner Wins!'),
+          title:
+              Text(winner == 'Tie' ? 'It\'s a Tie!' : 'Player $winner Wins!'),
           actions: <Widget>[
             TextButton(
               child: Text('OK'),
