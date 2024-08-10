@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:math'; // Import Random
 
 class GamePagePVC extends StatefulWidget {
   @override
@@ -13,9 +13,9 @@ class _GamePagePVCState extends State<GamePagePVC> {
   String _currentPlayer = 'X';
   String _winner = '';
   bool _gameOver = false;
-  bool? _soundEnabled;
   bool? _vibrationEnabled;
-  AudioPlayer _audioPlayer = AudioPlayer();
+  bool _isComputerTurn = false; // Track if it's the computer's turn
+  final Random _random = Random(); // Create a Random instance
 
   @override
   void initState() {
@@ -26,25 +26,17 @@ class _GamePagePVCState extends State<GamePagePVC> {
   void _loadSettings() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _soundEnabled = prefs.getBool('soundEnabled') ?? true;
       _vibrationEnabled = prefs.getBool('vibrationEnabled') ?? true;
     });
   }
 
-  void _playSound(String soundName) async {
-    if (_soundEnabled == true) {
-      await _audioPlayer.play(AssetSource('sounds/$soundName.wav'));
-    }
-  }
-
   void _handleTap(int index) {
-    if (_board[index] == '' && !_gameOver) {
+    if (_board[index] == '' && !_gameOver && !_isComputerTurn) {
       setState(() {
         _board[index] = _currentPlayer;
         if (_vibrationEnabled == true) {
           Vibration.vibrate(duration: 50);
         }
-        _playSound('move');
         if (_checkWin()) {
           _winner = _currentPlayer;
           _gameOver = true;
@@ -56,6 +48,7 @@ class _GamePagePVCState extends State<GamePagePVC> {
         } else {
           _currentPlayer = _currentPlayer == 'X' ? 'O' : 'X';
           if (_currentPlayer == 'O') {
+            _isComputerTurn = true;
             _computerMove();
           }
         }
@@ -63,12 +56,31 @@ class _GamePagePVCState extends State<GamePagePVC> {
     }
   }
 
-  void _computerMove() {
+  void _computerMove() async {
+    await Future.delayed(Duration(milliseconds: 700));
     int move = _findBestMove();
-    _handleTap(move);
+    setState(() {
+      _board[move] = 'O';
+      if (_vibrationEnabled == true) {
+        Vibration.vibrate(duration: 50);
+      }
+      if (_checkWin()) {
+        _winner = 'O';
+        _gameOver = true;
+        _showWinDialog('O');
+      } else if (_board.every((cell) => cell != '')) {
+        _winner = 'Tie';
+        _gameOver = true;
+        _showWinDialog('Tie');
+      } else {
+        _currentPlayer = 'X';
+        _isComputerTurn = false;
+      }
+    });
   }
 
   int _findBestMove() {
+    // Check for a winning move
     for (int i = 0; i < 9; i++) {
       if (_board[i] == '') {
         _board[i] = 'O';
@@ -79,6 +91,8 @@ class _GamePagePVCState extends State<GamePagePVC> {
         _board[i] = '';
       }
     }
+
+    // Check for a blocking move
     for (int i = 0; i < 9; i++) {
       if (_board[i] == '') {
         _board[i] = 'X';
@@ -89,12 +103,15 @@ class _GamePagePVCState extends State<GamePagePVC> {
         _board[i] = '';
       }
     }
+
+    // If no winning or blocking move, pick a random move
+    List<int> availableMoves = [];
     for (int i = 0; i < 9; i++) {
       if (_board[i] == '') {
-        return i;
+        availableMoves.add(i);
       }
     }
-    return 0;
+    return availableMoves.isNotEmpty ? availableMoves[_random.nextInt(availableMoves.length)] : 0;
   }
 
   bool _checkWin() {
@@ -125,6 +142,7 @@ class _GamePagePVCState extends State<GamePagePVC> {
       _currentPlayer = 'X';
       _winner = '';
       _gameOver = false;
+      _isComputerTurn = false;
     });
   }
 
