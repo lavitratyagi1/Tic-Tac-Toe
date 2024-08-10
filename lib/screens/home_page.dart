@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 import 'settings_screen.dart';
 import 'game_screen.dart';
+import 'Game_screen_PvC.dart'; // Import the new PvC game screen
 
 class HomePage extends StatelessWidget {
   void _handleButtonClick(BuildContext context) async {
@@ -48,19 +49,27 @@ class HomePage extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 40),
-              _buildMenuButton(context, 'Play', Icons.play_arrow, () {
+              _buildMenuButton(context, 'Play PvP', Icons.play_arrow, () {
                 _handleButtonClick(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GamePage()),
+                  context,
+                  MaterialPageRoute(builder: (context) => GamePage()),
+                );
+              }),
+              SizedBox(height: 20),
+              _buildMenuButton(context, 'Play PvC', Icons.computer, () { // New button for PvC mode
+                _handleButtonClick(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GamePagePVC()),
                 );
               }),
               SizedBox(height: 20),
               _buildMenuButton(context, 'Settings', Icons.settings, () {
                 _handleButtonClick(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SettingsScreen()),
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsScreen()),
                 );
               }),
               SizedBox(height: 20),
